@@ -29,7 +29,7 @@ public class Application
 		{
 			// Check if daily job is running
 			while(ctx.getBean(ExpiredCouponsDailyCleanerImpl.class).processingDailyJob())
-				Thread.sleep(100L);
+				Thread.sleep(10L);
 		} 
 		catch (InterruptedException e) {e.printStackTrace();}
 		((ConfigurableApplicationContext) ctx).close();

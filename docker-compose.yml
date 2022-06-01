@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: mysql:8
+    container_name: coupons-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment: 
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
+      MYSQL_USER: $MYSQLDB_USER
+      MYSQL_PASSWORD: $MYSQLDB_PASSWORD
+
+    volumes:
+      - "./mysql/init:/docker-entrypoint-initdb.d"
+
+  app:
+    build: 
+      context: ./jb_coupons_3.1
+      dockerfile: Dockerfile.jar-ready
+    container_name: coupons-app
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:$MYSQLDB_DOCKER_PORT/$MYSQLDB_DATABASE?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=$MYSQLDB_USER
+      - SPRING_DATASOURCE_PASSWORD=$MYSQLDB_PASSWORD
+      - SERVER_PORT=$SPRING_DOCKER_PORT
+    # volumes:
+    #   - .m2:/root/.m2
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    env_file:
+      - ./.env
+  
+  server:
+    container_name: nginx-server
+    image: nginx:1.21-alpine
+    restart: unless-stopped
+    ports:
+      - 82:80
+      - 445:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
