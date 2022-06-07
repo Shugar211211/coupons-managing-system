@@ -21,6 +21,9 @@ public class JwtUtil {
 	@Value("${jwt.secret}")
 	private String SECRET_KEY;
 	
+	@Value("${jwt.expirationperiod}")
+	private int JWT_LIFETIME;
+	
 	public String extractEmail(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
@@ -68,19 +71,13 @@ public class JwtUtil {
 //				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				// set token expiration time for 30 minutes
-				.setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
+				.setExpiration(new Date(System.currentTimeMillis()+JWT_LIFETIME))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY)
 				.compact();
 	}
 	
-//	public Boolean validateToken(String token, UserDetails userDetails) {
-//		final String email = extractEmail(token);
-//		return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
-//	}
-	
 	public Boolean validateToken(String token, Principal principal) {
 		final Claims claims = extractAllClaims(token);
-//		return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
 		if(((Integer)claims.get("id")).intValue() == principal.getId() 
 				&& claims.get("role").equals(principal.getRole())
 				&& claims.get("name").equals(principal.getName())
