@@ -39,10 +39,19 @@ public class JwtUtil {
 	}
 	
 	public Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+		return Jwts.parser()
+				.setSigningKey(SECRET_KEY)
+				.parseClaimsJws(token)
+				.getBody();
 	}
 	
-	private Boolean isTokenExpired(String token) {
+	
+	public String renewToken(String token) {
+		Claims claims = this.extractAllClaims(token);
+		return this.createToken(claims);
+	}
+	
+	public Boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 	
@@ -58,8 +67,8 @@ public class JwtUtil {
 		return Jwts.builder().setClaims(claims)
 //				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				// set token restriction for 24 hours at most
-				.setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24*7))
+				// set token expiration time for 30 minutes
+				.setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY)
 				.compact();
 	}

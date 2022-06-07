@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jb.coupons_project.auth.utils.JwtUtil;
 import com.jb.coupons_project.rest.error_response_entity.ErrorResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 @Component
 @Order(1)
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -53,10 +55,25 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		}
 		else { 
 			jwt = authorizationHeader.substring(7);
-			Map<String, Object>claims = jwtUtil.extractAllClaims(jwt);
-			id = (Integer)claims.get("id");
-			role = (String)claims.get("role");
-			name = (String)claims.get("name");
+			try {
+				// if token expired this will throw ExpiredJwtException
+				Map<String, Object>claims = jwtUtil.extractAllClaims(jwt);
+				id = (Integer)claims.get("id");
+				role = (String)claims.get("role");
+				name = (String)claims.get("name");
+			}
+			catch(ExpiredJwtException tokenExpiredException) {
+				ErrorResponse errorResponse = new ErrorResponse();
+				errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+				errorResponse.setMessage("JWT expired, please login");
+				errorResponse.setTimeStamp(System.currentTimeMillis());
+				
+				byte[] responseToSend = restResponseBytes(errorResponse);
+	            ((HttpServletResponse) response).setHeader("Content-Type", "application/json");
+	            ((HttpServletResponse) response).setStatus(401);
+	            response.getOutputStream().write(responseToSend);
+	            return;
+			}
 		}
 		
 		// check if token contains user role and user id
@@ -72,6 +89,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             response.getOutputStream().write(responseToSend);
             return;
 		}
+		
+		// renew token
+		String renewedToken = jwtUtil.renewToken(authorizationHeader.substring(7));
+		response.setHeader("Authorization", "Bearer_"+renewedToken);
 		
 		filterChain.doFilter(request, response);
 	}
