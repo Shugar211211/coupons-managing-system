@@ -8,9 +8,12 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 //import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @Configuration
 //@EnableWebMvc
 @ComponentScan("me.coupons")
+@EnableSwagger2
 public class AppConfig implements WebMvcConfigurer{
 	
 	@Override
