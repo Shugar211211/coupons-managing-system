@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiOperation;
 import me.coupons.auth.models.AuthenticationRequest;
 import me.coupons.auth.models.Principal;
 import me.coupons.auth.models.UserDetails;
@@ -38,6 +39,9 @@ public class AuthRestController {
 	private Principal principal;
 	
 	// endpoint for POST "/authenticate" - client authentication
+	@ApiOperation(value="Authentication endpoint",
+				  notes="Requires email, password and client type. In case of sucess returns JWT",
+				  response=String.class)
 	@RequestMapping(value="/authenticate", method=RequestMethod.POST)
 	public ResponseEntity<?> createAuthJwtToken(@RequestBody AuthenticationRequest authenticationRequest) throws JsonProcessingException {
 		
