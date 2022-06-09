@@ -75,6 +75,23 @@
     		<artifactId>jaxb-api</artifactId>
     	</dependency>
     	
+    	<!-- next 3 depencencies are for password encryption-->
+    	<!-- https://snyk.io/blog/password-hashing-java-applications/ -->
+    	<dependency>
+    		<groupId>org.springframework.security</groupId>
+    		<artifactId>spring-security-crypto</artifactId>
+    	</dependency>
+		<dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.bouncycastle</groupId>
+    		<artifactId>bcprov-jdk15on</artifactId>
+    		<version>1.70</version>
+		</dependency>
+    	
     	<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
 		<!-- 
 		<dependency>

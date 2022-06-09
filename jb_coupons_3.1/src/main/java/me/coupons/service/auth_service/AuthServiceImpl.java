@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import me.coupons.auth.models.Principal;
@@ -22,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
 	private String admin_password;
 	private CompanyRepository companyRepository;
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private PasswordEncoder argon2PasswordEncoderExtension;
 	
 	@Autowired
 	public AuthServiceImpl(@Value("${admin.email}")String admin_email, 
@@ -58,26 +62,35 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	private Principal authCompany(UserDetails userDetails) {
-		Optional<Company> optionalCompany = 
-				companyRepository.findByEmailAndPassword(userDetails.getEmail(), userDetails.getPassword());
-		if(optionalCompany.isPresent())
-		{
+		
+		Optional<Company> optionalCompany = companyRepository.findByEmail(userDetails.getEmail());
+		if(optionalCompany.isPresent()) {
 			Company thisCompany = optionalCompany.get();
-			return new Principal(thisCompany.getId(), thisCompany.getName(), ClientType.COMPANY);
+			if(argon2PasswordEncoderExtension.matches(userDetails.getPassword(), thisCompany.getPassword())) {
+				return new Principal(thisCompany.getId(), 
+									 thisCompany.getName(), 
+									 ClientType.COMPANY);
+			}
+			else { throw new WrongCredentialsException("Wrong password"); }
 		}
-		else { throw new WrongCredentialsException("Wrong email or password"); }
+		else { throw new WrongCredentialsException("Company not found"); }
 	}
 	
 	private Principal authCustomer(UserDetails userDetails) {
-		Optional<Customer> optionalCustomer = 
-				customerRepository.findByEmailAndPassword(userDetails.getEmail(), userDetails.getPassword());
-		if(optionalCustomer.isPresent())
-		{
+		
+		Optional<Customer> optionalCustomer = customerRepository.findByEmail(userDetails.getEmail());
+		if(optionalCustomer.isPresent()) {
 			Customer thisCustomer = optionalCustomer.get();
-			return new Principal(thisCustomer.getId(), 
-								 thisCustomer.getFirstName().concat(" ").concat(thisCustomer.getLastName()), 
-								 ClientType.CUSTOMER);
+			if(argon2PasswordEncoderExtension.matches(userDetails.getPassword(), thisCustomer.getPassword())) {
+				return new Principal(thisCustomer.getId(), 
+									 thisCustomer.getFirstName()
+									 	.concat(" ")
+									 	.concat(thisCustomer
+									 	.getLastName()), 
+									 ClientType.CUSTOMER);
+			}
+			else { throw new WrongCredentialsException("Wrong password"); }
 		}
-		else { throw new WrongCredentialsException("Wrong email or password"); }
+		else { throw new WrongCredentialsException("Customer not found"); }
 	}
 }

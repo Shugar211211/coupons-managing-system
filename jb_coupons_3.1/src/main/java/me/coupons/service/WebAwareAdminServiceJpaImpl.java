@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -42,6 +44,9 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 	@Autowired
 	private InputValidator inputValidator;
 	
+	@Autowired
+	private PasswordEncoder argon2PasswordEncoderExtension;
+	
 	@Override
 	public String getClientMsg() {
 		return clientMsg;
@@ -74,6 +79,9 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 			return;
 		}
 		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(company.getPassword());
+		company.setPassword(encryptedPassword);
+		
 		companyRepository.save(company);
 		this.clientMsg="Company added";
 	}
@@ -96,6 +104,9 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 			this.clientMsg="Cannot add customer: customer with this email already registered";
 			return;
 		}
+		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(customer.getPassword());
+		customer.setPassword(encryptedPassword);
 		
 		customerRepository.save(customer);
 		this.clientMsg="Customer added";
@@ -191,6 +202,9 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 			return;
 		}
 		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(company.getPassword());
+		company.setPassword(encryptedPassword);
+		
 		companyRepository.save(company);
 		this.clientMsg="Company updated";
 	}
@@ -205,6 +219,9 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 			this.clientMsg = inputValidator.getClientMsg();
 			return;
 		}
+		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(customer.getPassword());
+		customer.setPassword(encryptedPassword);
 		
 		customerRepository.save(customer);
 		this.clientMsg="Customer updated";
