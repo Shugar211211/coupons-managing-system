@@ -14,8 +14,8 @@ public class InputValidatorImpl implements InputValidator
 {
 	private static final String PWD_REGEX = "[^A-Za-z0-9]";
 	private static final String EMAIL_REGEX = "[^A-Za-z0-9@._-]";
-	private static final String NAME_REGEX = "[^A-Za-z0-9().,;:'\"!?%&$/\\s-]";
-	private static final String TITLE_REGEX = "[^A-Za-z0-9().,;:'\"!?%&$/\\s-]";
+	private static final String NAME_REGEX = "[^A-Za-z0-9א-ת().,;:'\"!?%&$/\\s-]";
+	private static final String TITLE_REGEX = "[^A-Za-z0-9א-ת().,;:'\"!?%&$/\\s-]";
 //	private static final String URL_REGEX = "[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
 //	private static final String URL_REGEX = "";
 	
