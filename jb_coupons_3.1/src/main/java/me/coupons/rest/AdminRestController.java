@@ -26,7 +26,7 @@ public class AdminRestController {
 	@Autowired
 	private WebAwareAdminService adminService;
 	
-	// endpoint for POST "/companies" - add new company
+	// add new company
 	@PostMapping("/companies")
 	public Company addCompany(@RequestBody Company company) {
 		company.setId(0);
@@ -37,7 +37,7 @@ public class AdminRestController {
 		return company;
 	}
 	
-	// endpoint for POST "/customers" - add new customer
+	// add new customer
 	@PostMapping("/customers")
 	public Customer addCustomer(@RequestBody Customer customer) {
 		customer.setId(0);
@@ -49,7 +49,7 @@ public class AdminRestController {
 		return customer;
 	}
 	
-	// endpoint for DELETE /companies - delete company
+	// delete company
 	@DeleteMapping("/companies/{companyId}")
 	public String deleteCompany(@PathVariable int companyId) {
 		this.adminService.deleteCompany(companyId);
@@ -59,7 +59,7 @@ public class AdminRestController {
 		return "{\"Message\": \"Company deleted\"}";
 	}
 	
-	// endpoint for DELETE /customers - delete customer
+	// delete customer
 	@DeleteMapping("/customers/{customerId}")
 	public String deleteCustomer(@PathVariable int customerId) {
 		this.adminService.deleteCustomer(customerId);
@@ -69,14 +69,14 @@ public class AdminRestController {
 		return "{\"Message\": \"Customer deleted\"}";
 	}
 	
-	// endpoint for GET "/companies" - return list of companies
+	// get list of companies
 	@GetMapping("/companies")
 	public List<Company> getCompanies() {
 		List<Company> companies = this.adminService.getAllCompanies();
 		return companies;
 	}
 	
-	// endpoint for GET "/companies/{companyId}" - return company at index
+	// get company by id
 	@GetMapping("/companies/{companyId}")
 	public Company getCompany(@PathVariable int companyId) {
 		Company company = this.adminService.getOneCompany(companyId);
@@ -86,14 +86,14 @@ public class AdminRestController {
 		return company;
 	}
 	
-	// endpoint for "/customers" - return list of customers
+	// get list of customers
 	@GetMapping("/customers")
 	public List<Customer> getCustomers() {
 		List<Customer> customers = this.adminService.getAllCustomers();
 		return customers;
 	}
 	
-	// endpoint for "/customers/{customerId}" - return customer at index
+	// get customer by id
 	@GetMapping("/customers/{customerId}")
 	public Customer getCustomer(@PathVariable int customerId) {
 		Customer customer = this.adminService.getOneCustomer(customerId);
@@ -103,7 +103,7 @@ public class AdminRestController {
 		return customer;
 	}
 	
-	// endpoint for PUT /companies - update company
+	// update company
 	@PutMapping("/companies")
 	public Company updateCompany(@RequestBody Company company) {
 		this.adminService.updateCompany(company);
@@ -113,7 +113,7 @@ public class AdminRestController {
 		return company;
 	}
 	
-	// endpoint for PUT /customers - update customer
+	// update customer
 	@PutMapping("/customers")
 	public Customer updateCustomer(@RequestBody Customer customer) {
 		this.adminService.updateCustomer(customer);

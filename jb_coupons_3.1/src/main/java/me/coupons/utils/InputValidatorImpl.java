@@ -46,9 +46,9 @@ public class InputValidatorImpl implements InputValidator
 	@Override
 	public String validatePassword(String password)
 	{
-		if(password.equals("") || password==null)
+		if(password==null || password.equals(""))
 		{
-			this.clientMsg = "Password is required to log in.";
+			this.clientMsg = "Password is required";
 			return null;
 		}
 
@@ -72,7 +72,7 @@ public class InputValidatorImpl implements InputValidator
 	@Override
 	public String validateEmail(String email)
 	{
-		if(email.equals("") || email==null)
+		if(email==null || email.equals(""))
 		{
 			this.clientMsg = "Email is required to log in.";
 			return null;
@@ -98,7 +98,7 @@ public class InputValidatorImpl implements InputValidator
 	@Override
 	public String validateName(String name)
 	{
-		if(name.equals("") || name==null)
+		if(name==null || name.equals(""))
 		{
 			this.clientMsg = "Can not complete operation: Name field is empty.";
 			return null;
@@ -123,7 +123,7 @@ public class InputValidatorImpl implements InputValidator
 	 */
 	public String validateString(String str)
 	{
-		if(str.equals("") || str==null)
+		if(str==null || str.equals(""))
 		{
 			this.clientMsg = "is empty.";
 			return null;

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class CouponRepositoryImpl implements CouponRepositoryCustom {
+public class CouponRepositoryExtensionImpl implements CouponRepositoryExtension {
 
 	@PersistenceContext
     EntityManager entityManager;

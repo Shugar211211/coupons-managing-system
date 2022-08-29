@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import me.coupons.entity.Customer;
 
-public interface CustomerRepository extends JpaRepository<Customer, Integer>
+public interface CustomerRepository extends JpaRepository<Customer, Integer>, CustomerRepositoryExtension
 {
 	@Query("FROM Customer c WHERE c.email= :email AND c.password= :password")
 	Optional<Customer> findByEmailAndPassword(@Param("email") String email, 

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import me.coupons.entity.Coupon;
 
-public interface CouponRepository extends JpaRepository<Coupon, Integer>, CouponRepositoryCustom
+public interface CouponRepository extends JpaRepository<Coupon, Integer>, CouponRepositoryExtension
 {
 	/**
 	 * Delete all coupons whose end date is less than given date

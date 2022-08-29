@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -183,6 +182,21 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 	}
 	
 	@Override
+	public void resetCustomerPassword(int id, String password) {
+		
+		if(id < 1) {
+			this.clientMsg = "Customer id is not valid";
+			return;
+		}
+		if(this.inputValidator.validatePassword(password) == null) {
+			this.clientMsg = inputValidator.getClientMsg();
+			return;
+		}
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(password);
+		customerRepository.resetCustomerPassword(id, encryptedPassword);
+	}
+	
+	@Override
 	public void updateCompany(Company company) {
 		
 		// check if any company fields have invalid data
@@ -212,18 +226,29 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 	@Override
 	public void updateCustomer(Customer customer) {
 		
-		// check if any customer fields have invalid data
-		Customer validCustomer = inputValidator.validateCustomer(customer);
-		if(validCustomer == null)
-		{
+		// if customer object has password field and it is not empty, the update password only and quit function
+		if(customer.getPassword() != null && !customer.getPassword().equals("")) {
+			this.resetCustomerPassword(customer.getId(), customer.getPassword());
+			this.clientMsg="Customer updated";
+			return;
+		}
+		
+		// validate fields of customer object
+		if(inputValidator.validateEmail(customer.getEmail()) == null) {
+			this.clientMsg = inputValidator.getClientMsg();
+			return;
+		}	
+		if(inputValidator.validateName(customer.getFirstName()) == null) {
+			this.clientMsg = inputValidator.getClientMsg();
+			return;
+		}
+		if(inputValidator.validateName(customer.getLastName()) == null) {
 			this.clientMsg = inputValidator.getClientMsg();
 			return;
 		}
 		
-		String encryptedPassword = argon2PasswordEncoderExtension.encode(customer.getPassword());
-		customer.setPassword(encryptedPassword);
-		
-		customerRepository.save(customer);
+		// update customer info except password
+		customerRepository.updateCustomerSkipPassword(customer);
 		this.clientMsg="Customer updated";
 	}
 }

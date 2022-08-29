@@ -1,6 +1,6 @@
 package me.coupons.repository;
 
-public interface CouponRepositoryCustom {
+public interface CouponRepositoryExtension {
 	
 	/**
 	 * Add coupon purchase

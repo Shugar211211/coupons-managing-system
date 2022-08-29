@@ -57,6 +57,13 @@ public interface WebAwareAdminService {
 	void updateCustomer(Customer customer);
 
 	/**
+	 * Update customer password
+	 * @param id: customer id
+	 * @param password: customer password
+	 */
+	void resetCustomerPassword(int id, String password);
+	
+	/**
 	 * Deletes customer from database.
 	 * @param customerID to find and delete customer with this id.
 	 */
