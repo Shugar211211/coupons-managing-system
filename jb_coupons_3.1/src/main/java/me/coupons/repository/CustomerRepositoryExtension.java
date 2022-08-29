@@ -5,7 +5,7 @@ import me.coupons.entity.Customer;
 public interface CustomerRepositoryExtension {
 
 	/**
-	 * Update customer, password field is not ignored
+	 * Update customer, password field is ignored
 	 * @param customer: Customer object
 	 */
 	void updateCustomerSkipPassword(Customer customer);

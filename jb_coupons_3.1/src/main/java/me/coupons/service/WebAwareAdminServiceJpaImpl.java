@@ -182,6 +182,21 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 	}
 	
 	@Override
+	public void resetCompanyPassword(int id, String password) {
+		
+		if(id < 1) {
+			this.clientMsg = "Company id is not valid";
+			return;
+		}
+		if(this.inputValidator.validatePassword(password) == null) {
+			this.clientMsg = inputValidator.getClientMsg();
+			return;
+		}
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(password);
+		customerRepository.resetCustomerPassword(id, encryptedPassword);
+	}
+	
+	@Override
 	public void resetCustomerPassword(int id, String password) {
 		
 		if(id < 1) {
@@ -199,27 +214,25 @@ public class WebAwareAdminServiceJpaImpl implements WebAwareAdminService{
 	@Override
 	public void updateCompany(Company company) {
 		
-		// check if any company fields have invalid data
-		Company validCompany = this.inputValidator.validateCompany(company);
-		if(validCompany == null)
-		{
+		// if company object has password field and it is not empty, the update password only and quit function
+		if(company.getPassword() != null && !company.getPassword().equals("")) {
+			this.resetCompanyPassword(company.getId(), company.getPassword());
+			this.clientMsg="Company updated";
+			return;
+		}
+				
+		// validate fields of company object
+		if(inputValidator.validateEmail(company.getEmail()) == null) {
+			this.clientMsg = inputValidator.getClientMsg();
+			return;
+		}	
+		if(inputValidator.validateName(company.getName()) == null) {
 			this.clientMsg = inputValidator.getClientMsg();
 			return;
 		}
-		
-		// protect from changing company name
-		Optional<Company> optionalCompany = companyRepository.findById(company.getId());
-		Company oldCompany = optionalCompany.get();
-		if( ! oldCompany.getName().equals(company.getName()) )
-		{
-			this.clientMsg="Cannot update company: cannot update company name";
-			return;
-		}
-		
-		String encryptedPassword = argon2PasswordEncoderExtension.encode(company.getPassword());
-		company.setPassword(encryptedPassword);
-		
-		companyRepository.save(company);
+				
+		// update company info except password
+		companyRepository.updateCompanySkipPassword(company);
 		this.clientMsg="Company updated";
 	}
 

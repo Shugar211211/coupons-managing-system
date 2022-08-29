@@ -57,9 +57,16 @@ public interface WebAwareAdminService {
 	void updateCustomer(Customer customer);
 
 	/**
-	 * Update customer password
+	 * Reset company password
+	 * @param id: company id
+	 * @param password: company new password
+	 */
+	void resetCompanyPassword(int id, String password);
+	
+	/**
+	 * Reset customer password
 	 * @param id: customer id
-	 * @param password: customer password
+	 * @param password: customer new password
 	 */
 	void resetCustomerPassword(int id, String password);
 	
