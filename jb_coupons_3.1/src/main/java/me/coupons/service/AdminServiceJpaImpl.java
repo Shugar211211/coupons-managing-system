@@ -211,7 +211,7 @@ public class AdminServiceJpaImpl implements AdminService{
 			// update company info except password
 			companyRepository.updateCompanySkipPassword(company);
 		}
-		this.clientMsg="Customer updated";
+		this.clientMsg="Company updated";
 	}
 
 	@Override

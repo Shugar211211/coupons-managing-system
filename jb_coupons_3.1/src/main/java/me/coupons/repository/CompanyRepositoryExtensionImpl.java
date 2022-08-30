@@ -21,7 +21,7 @@ public class CompanyRepositoryExtensionImpl implements CompanyRepositoryExtensio
 		Query query = entityManager.createNativeQuery("UPDATE `companies` SET `email` = ?1, `name` = ?2 WHERE `id` = ?3 ");
 		query.setParameter(1, company.getEmail());
 		query.setParameter(2, company.getName());
-		query.setParameter(4, company.getId());
+		query.setParameter(3, company.getId());
 		query.executeUpdate();
 	}
 
