@@ -55,20 +55,6 @@ public interface WebAwareAdminService {
 	 * @param customer - Customer object that represents updated customer.
 	 */
 	void updateCustomer(Customer customer);
-
-	/**
-	 * Reset company password
-	 * @param id: company id
-	 * @param password: company new password
-	 */
-	void resetCompanyPassword(int id, String password);
-	
-	/**
-	 * Reset customer password
-	 * @param id: customer id
-	 * @param password: customer new password
-	 */
-	void resetCustomerPassword(int id, String password);
 	
 	/**
 	 * Deletes customer from database.
@@ -88,5 +74,4 @@ public interface WebAwareAdminService {
 	 * @return customer object if found or null if not found.
 	 */
 	Customer getOneCustomer(int customerID);
-
 }

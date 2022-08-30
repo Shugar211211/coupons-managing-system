@@ -10,10 +10,10 @@ public interface CustomerRepositoryExtension {
 	 */
 	void updateCustomerSkipPassword(Customer customer);
 	
-	/**
-	 * Reset customer password
-	 * @param id: customer id
-	 * @param password: new password
-	 */
-	void resetCustomerPassword(int id, String password);
+//	/**
+//	 * Reset customer password
+//	 * @param id: customer id
+//	 * @param password: new password
+//	 */
+//	void resetCustomerPassword(int id, String password);
 }

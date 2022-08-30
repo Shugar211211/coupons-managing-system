@@ -26,12 +26,11 @@ public class CustomerRepositoryExtensionImpl implements CustomerRepositoryExtens
 		query.executeUpdate();
 	}
 
-	@Override
-	public void resetCustomerPassword(int id, String password) {
-		Query query = entityManager.createNativeQuery("UPDATE `customers` SET `password` = ?1 WHERE `id` = ?2 ");
-		query.setParameter(1, password);
-		query.setParameter(2, id);
-		query.executeUpdate();
-	}
-
+//	@Override
+//	public void resetCustomerPassword(int id, String password) {
+//		Query query = entityManager.createNativeQuery("UPDATE `customers` SET `password` = ?1 WHERE `id` = ?2 ");
+//		query.setParameter(1, password);
+//		query.setParameter(2, id);
+//		query.executeUpdate();
+//	}
 }

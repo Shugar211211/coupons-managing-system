@@ -10,11 +10,11 @@ public interface CompanyRepositoryExtension {
 	 */
 	void updateCompanySkipPassword(Company company);
 	
-	/**
-	 * Reset company password
-	 * @param id: company id
-	 * @param password: new password
-	 */
-	void resetCompanyPassword(int id, String password);
+//	/**
+//	 * Reset company password
+//	 * @param id: company id
+//	 * @param password: new password
+//	 */
+//	void resetCompanyPassword(int id, String password);
 	
 }

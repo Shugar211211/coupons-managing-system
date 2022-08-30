@@ -25,11 +25,11 @@ public class CompanyRepositoryExtensionImpl implements CompanyRepositoryExtensio
 		query.executeUpdate();
 	}
 
-	@Override
-	public void resetCompanyPassword(int id, String password) {
-		Query query = entityManager.createNativeQuery("UPDATE `companies` SET `password` = ?1 WHERE `id` = ?2 ");
-		query.setParameter(1, password);
-		query.setParameter(2, id);
-		query.executeUpdate();
-	}
+//	@Override
+//	public void resetCompanyPassword(int id, String password) {
+//		Query query = entityManager.createNativeQuery("UPDATE `companies` SET `password` = ?1 WHERE `id` = ?2 ");
+//		query.setParameter(1, password);
+//		query.setParameter(2, id);
+//		query.executeUpdate();
+//	}
 }
