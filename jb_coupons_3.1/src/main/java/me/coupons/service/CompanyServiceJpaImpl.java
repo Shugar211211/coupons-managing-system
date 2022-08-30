@@ -16,7 +16,7 @@ import me.coupons.utils.InputValidator;
 
 @Service
 @RequestScope
-public class WebAwareCompanyServiceJpaImpl implements WebAwareCompanyService{
+public class CompanyServiceJpaImpl implements CompanyService{
 	
 	@Autowired
 	private CouponRepository couponRepository;

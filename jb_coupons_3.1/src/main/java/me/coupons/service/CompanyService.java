@@ -6,7 +6,7 @@ import me.coupons.entity.Category;
 import me.coupons.entity.Company;
 import me.coupons.entity.Coupon;
 
-public interface WebAwareCompanyService {
+public interface CompanyService {
 	/**
 	 * This method returns client message.
 	 * @return client message

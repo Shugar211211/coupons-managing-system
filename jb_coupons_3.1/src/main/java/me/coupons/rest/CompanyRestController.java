@@ -21,7 +21,7 @@ import me.coupons.entity.Category;
 import me.coupons.entity.Company;
 import me.coupons.entity.Coupon;
 import me.coupons.rest.custom_exceptions.EntityRetrievalException;
-import me.coupons.service.WebAwareCompanyService;
+import me.coupons.service.CompanyService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,7 +29,7 @@ import me.coupons.service.WebAwareCompanyService;
 public class CompanyRestController {
 	
 	@Autowired
-	private WebAwareCompanyService companyService;
+	private CompanyService companyService;
 	
 	@Autowired
 	private JwtUtil jwtUtil;

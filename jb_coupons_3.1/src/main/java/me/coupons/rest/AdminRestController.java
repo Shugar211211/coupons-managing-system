@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import me.coupons.entity.Company;
 import me.coupons.entity.Customer;
 import me.coupons.rest.custom_exceptions.EntityRetrievalException;
-import me.coupons.service.WebAwareAdminService;
+import me.coupons.service.AdminService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -24,7 +24,7 @@ import me.coupons.service.WebAwareAdminService;
 public class AdminRestController {
 	
 	@Autowired
-	private WebAwareAdminService adminService;
+	private AdminService adminService;
 	
 	// add new company
 	@PostMapping("/companies")

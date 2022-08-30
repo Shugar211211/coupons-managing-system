@@ -19,7 +19,7 @@ import me.coupons.entity.Category;
 import me.coupons.entity.Coupon;
 import me.coupons.entity.Customer;
 import me.coupons.rest.custom_exceptions.EntityRetrievalException;
-import me.coupons.service.WebAwareCustomerService;
+import me.coupons.service.CustomerService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -30,7 +30,7 @@ public class CustomerRestController {
 	private JwtUtil jwtUtil;
 	
 	@Autowired
-	private WebAwareCustomerService customerService;
+	private CustomerService customerService;
 	
 	// endpoint for PUT /coupons - purchase coupon
 	@PutMapping("/coupons")

@@ -1,4 +1,4 @@
-package me.coupons.console.service;
+package me.coupons.service;
 
 import java.util.List;
 
@@ -15,21 +15,11 @@ public interface CustomerService {
 	String getClientMsg();
 
 	/**
-	 * Method checks login credentials.
-	 * @param email, password.
-	 * @return true if customer with this email and password found in database, 
-	 * or false otherwise.
-	 * @throws DBOperationException in case of database operation error 
-	 * while searching for customer.
-	 */
-	boolean login(String email, String password);
-
-	/**
 	 * Method performs coupon purchase.
 	 * @param coupon object that represents coupon to be purchased.
 	 * while performing coupon purchase.
 	 */
-	void purchaseCoupon(Coupon coupon);
+	void purchaseCoupon(int id, Coupon coupon);
 
 	/**
 	 * Method deletes coupon purchase from database. 
@@ -37,22 +27,42 @@ public interface CustomerService {
 	 * Coupon amount is increased by 1.
 	 * @param coupon whose purchase to be deleted.
 	 */
-	void deletePurchase(Coupon coupon);
+	void deletePurchase(int id, Coupon coupon);
 
+	/**
+	 * Returns coupons that are available for purchase
+	 * @param id
+	 * @return
+	 */
+	List<Coupon> getAwailableCoupons(int id);
+	
+	/**
+	 * Method returns list of all categories
+	 * @return
+	 */
+	String getCategoriesList();
+	
 	/**
 	 * Method finds all coupons of this customer.
 	 * @return ArrayList of coupon objects or that represent coupons, 
 	 * or null if customer not found.
 	 */
-	List<Coupon> getCustomerCoupons();
+	List<Coupon> getCustomerCoupons(int id);
 
+	/**
+	 * Get one coupon by coupon id
+	 * @param id
+	 * @return
+	 */
+	Coupon getCouponById(int id);
+	
 	/**
 	 * Method finds all coupons of this customer filtered by category.
 	 * @param Category title
 	 * @return ArrayList of coupon objects or that represent coupons, 
 	 * or null if customer not found.
 	 */
-	List<Coupon> getCustomerCoupons(Category category);
+	List<Coupon> getCustomerCoupons(int id, Category category);
 
 	/**
 	 * Method finds all coupons of this customer filtered by max price.
@@ -60,12 +70,11 @@ public interface CustomerService {
 	 * @return ArrayList of coupon objects or that represent coupons, 
 	 * or null if customer not found.
 	 */
-	List<Coupon> getCustomerCoupons(double maxPrice);
+	List<Coupon> getCustomerCoupons(int id, double maxPrice);
 
 	/**
 	 * Method retrieves customer details by customer id.
 	 * @return Customer object if found or null if not found.
 	 */
-	Customer getCustomerDetails();
-
+	Customer getCustomerDetails(int id);
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import me.coupons.entity.Company;
 import me.coupons.entity.Customer;
 
-public interface WebAwareAdminService {
+public interface AdminService {
 	
 	/**
 	 * Method returns client message.

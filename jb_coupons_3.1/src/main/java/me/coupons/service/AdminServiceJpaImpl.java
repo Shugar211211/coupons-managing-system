@@ -1,12 +1,13 @@
-package me.coupons.console.service;
+package me.coupons.service;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import me.coupons.entity.Company;
 import me.coupons.entity.Coupon;
@@ -17,8 +18,8 @@ import me.coupons.repository.CustomerRepository;
 import me.coupons.utils.InputValidator;
 
 @Service
-@Scope("prototype")
-public class AdminServiceJpaImpl extends ClientFacade implements AdminService {
+@RequestScope
+public class AdminServiceJpaImpl implements AdminService{
 	
 	// admin email
 	@Value("${admin.email}")
@@ -28,42 +29,26 @@ public class AdminServiceJpaImpl extends ClientFacade implements AdminService {
 	@Value("${admin.password}")
 	private String ADMIN_PASSWORD;
 	
-	private InputValidator inputValidator;
-		
-	// Operation status message - used for client feedback
-	private String clientMsg;
-	
-	public AdminServiceJpaImpl() {
-		this.clientMsg="";
-	}
+	@Autowired
+	private CouponRepository couponRepository;
 	
 	@Autowired
-	public AdminServiceJpaImpl(CompanyRepository companyRepository, 
-							   CustomerRepository customerRepository,
-							   CouponRepository couponRepository,
-							   InputValidator inputValidator) {
-		super(companyRepository, customerRepository, couponRepository);
-		this.clientMsg="";
-		this.inputValidator = inputValidator;
-	}
-
-	@Override
-	public String getClientMsg() {
-		return this.clientMsg;
-	}
+	private CompanyRepository companyRepository;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	private String clientMsg="";
+	
+	@Autowired
+	private InputValidator inputValidator;
+	
+	@Autowired
+	private PasswordEncoder argon2PasswordEncoderExtension;
 	
 	@Override
-	public boolean login(String email, String password) {
-		if(ADMIN_EMAIL.equals(email) && ADMIN_PASSWORD.equals(password))
-		{
-			this.clientMsg = this.ADMIN_EMAIL + ": logged in as admin";
-			return true;
-		}
-		else
-		{
-			this.clientMsg = "user " + email + " not found";
-			return false;
-		}
+	public String getClientMsg() {
+		return clientMsg;
 	}
 	
 	@Override
@@ -93,6 +78,9 @@ public class AdminServiceJpaImpl extends ClientFacade implements AdminService {
 			return;
 		}
 		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(company.getPassword());
+		company.setPassword(encryptedPassword);
+		
 		companyRepository.save(company);
 		this.clientMsg="Company added";
 	}
@@ -115,6 +103,9 @@ public class AdminServiceJpaImpl extends ClientFacade implements AdminService {
 			this.clientMsg="Cannot add customer: customer with this email already registered";
 			return;
 		}
+		
+		String encryptedPassword = argon2PasswordEncoderExtension.encode(customer.getPassword());
+		customer.setPassword(encryptedPassword);
 		
 		customerRepository.save(customer);
 		this.clientMsg="Customer added";
@@ -193,39 +184,71 @@ public class AdminServiceJpaImpl extends ClientFacade implements AdminService {
 	@Override
 	public void updateCompany(Company company) {
 		
-		// check if any company fields have invalid data
-		Company validCompany = inputValidator.validateCompany(company);
-		if(validCompany == null)
-		{
-			this.clientMsg = inputValidator.getClientMsg();
-			return;
+		// if company object has password field and it is not empty, then update company
+		String password = company.getPassword();
+		if(password != null && !password.equals("")) {		
+			// check if any company fields have invalid data
+			Company validCompany = inputValidator.validateCompany(company);
+			if(validCompany == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}
+			company.setPassword(argon2PasswordEncoderExtension.encode(password));
+			companyRepository.save(company);
 		}
-		
-		// protect from changing company name
-		Optional<Company> optionalCompany = companyRepository.findById(company.getId());
-		Company oldCompany = optionalCompany.get();
-		if( ! oldCompany.getName().equals(company.getName()) )
-		{
-			this.clientMsg="Cannot update company: cannot update company name";
-			return;
+		// if password field is null or is empty string, then update all fields except password
+		else {
+			// validate email field of company object
+			if(inputValidator.validateEmail(company.getEmail()) == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}	
+			// validate name field of company object
+			if(inputValidator.validateName(company.getName()) == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}
+			// update company info except password
+			companyRepository.updateCompanySkipPassword(company);
 		}
-		
-		companyRepository.save(company);
-		this.clientMsg="Company updated";
+		this.clientMsg="Customer updated";
 	}
 
 	@Override
 	public void updateCustomer(Customer customer) {
 		
-		// check if any customer fields have invalid data
-		Customer validCustomer = inputValidator.validateCustomer(customer);
-		if(validCustomer == null)
-		{
-			this.clientMsg = inputValidator.getClientMsg();
-			return;
+		// if customer object has password field and it is not empty, then update customer
+		String password = customer.getPassword();
+		if(password != null && !password.equals("")) {
+			// check if any customer fields have invalid data
+			Customer validCustomer = inputValidator.validateCustomer(customer);
+			if(validCustomer == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}
+			customer.setPassword(argon2PasswordEncoderExtension.encode(password));
+			customerRepository.save(customer);
 		}
-		
-		customerRepository.save(customer);
+		// if password field is null or is empty string, then update all fields except password
+		else {
+			// validate email field of customer object
+			if(inputValidator.validateEmail(customer.getEmail()) == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}	
+			// validate first name field of customer object
+			if(inputValidator.validateName(customer.getFirstName()) == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}
+			// validate last name field of customer object
+			if(inputValidator.validateName(customer.getLastName()) == null) {
+				this.clientMsg = inputValidator.getClientMsg();
+				return;
+			}
+			// update customer info except password
+			customerRepository.updateCustomerSkipPassword(customer);
+		}
 		this.clientMsg="Customer updated";
 	}
 }
